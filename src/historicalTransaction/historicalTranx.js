@@ -38,7 +38,6 @@ async function getHistoryOfBitcoin(address) {
   const response = await axios.get(
     `https://blockchain.info/rawaddr/${address}`
   );
-  console.log("Bitcoin Transaction History:", response.data);
   return response.data;
 }
 
@@ -68,11 +67,14 @@ async function getHistoryThroughBlockCypher(address) {
     return [];
   }
 }
+router.get("/",(req,res)=>{
+  res.send("hii thre")
+})
 
 router.get("/historyOfTrax", async (req, res) => {
-
   try {
     const walletAddress = req.body.walletAddress;
+    console.log("this is the wallet Address", walletAddress)
 
     if (!walletAddress) {
       return res.status(404).json("Please give wallet address");
@@ -95,28 +97,28 @@ router.get("/historyOfTrax", async (req, res) => {
       const result = getHistoryOfEthereum(walletAddress);
 
       const jsonTocsv = await JSONTOCSV(result);
-      return result;
+      return res.status(200).json({result});
     } else if (identifyAddress === "Bitcoin") {
       // code to fetch the history of the transactions
-      const result = getHistoryOfBitcoin(walletAddress);
-
-      return result;
+      const result = await getHistoryOfBitcoin(walletAddress);
+      console.log("this is the result", result)
+      return res.status(200).json({result});
     } else if (identifyAddress === "Cardano") {
       // code to fetch the history of the transactions
       const result = getHistoryOfCardano(walletAddress);
 
-      return result;
+      return res.status(200).json({result});
     } else if (identifyAddress === "Solana") {
       // code to fetch the history of the transactions
       const result = getHistoryOfSolana(walletAddress);
 
-      return result;
+      return res.status(200).json({result});
     } else {
       // call the blockCypher for identification if the blockCypher return something show that otherwise show valid enter valid address
 
       const result = getHistoryThroughBlockCypher(walletAddress);
       if (result.length > 0) {
-        return result;
+        return res.status(200).json({result});
       } else {
         res.status(401).send("Address might be invalid");
         return [];
@@ -129,7 +131,7 @@ router.get("/historyOfTrax", async (req, res) => {
 });
 
 
-router.get("getMultiChainTraxHistory", async(req,res)=>{
+router.get("/getMultiChainTraxHistory", async(req,res)=>{
   try { 
     const {chain, walletAddress} = req.body;
     if(!chain || !walletAddress){
@@ -156,3 +158,5 @@ router.get("getMultiChainTraxHistory", async(req,res)=>{
         return [];
     }
 })
+
+export default router;

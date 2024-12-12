@@ -15,6 +15,7 @@ const router =  express.Router();
 //  to check for the suspicious wallet address in db
 
 router.get("/checkSuspicious", async(req, res)=>{
+    // console.log("Wallet address", req.body.walletAddress);
     try {
         const {walletAddress} = req.body;
     
@@ -28,7 +29,16 @@ router.get("/checkSuspicious", async(req, res)=>{
             return res.status(400).send("the data is incorrect");   
         }
 
-        const checkSuspicious = await axios.post("Url to check for suspicious");
+        const checkifsuspiciousAlreadyExist = await prisma.isSuspicious.findUnique({
+            where:{
+                walletAddress:walletAddress
+            }
+        })
+
+        if(checkifsuspiciousAlreadyExist){
+            return res.status(201).json({"this account already exists" : checkifsuspiciousAlreadyExist})
+        }
+        const checkSuspicious = await axios.post("url to check for the suspicious");
 
         if(checkSuspicious){
             return true
@@ -58,11 +68,11 @@ router.post("/suspiciousWalletAddress", async(req, res)=>{
             return res.status(400).send("the data is incorrect");   
         }
     
-        const existingSuspiciousAddress = await prisma.isSuspicious.findUnique({
-            where:{
-                walletAddress:walletAddress
+        const existingSuspiciousAddress =await prisma.isSuspicious.findUnique({
+            where: {
+              walletAddress: walletAddress
             }
-        })
+          });
     
     
         if(existingSuspiciousAddress){
