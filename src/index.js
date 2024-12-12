@@ -23,8 +23,16 @@ app.get('/', (req, res) => {
 
 import userRouter from "./authentication/auth.js";
 import suspiciousRouter from "./suspicious/suspicious.js";
+import historicalTrax from "./historicalTransaction/historicalTranx.js";
+import exchange from "./Exchange/exchange.js";
+import bulkcsv from "./graphsense/graphsense.js"
+import transactionADay from "./tranx/tranxADay.js"
 app.use('/api/v1/user', userRouter); 
-app.use('api/v1/suspicious',suspiciousRouter);
+app.use('/api/v1/suspicious',suspiciousRouter);
+app.use('/api/v1/history', historicalTrax);
+// app.use('/api/v1/graphsense/bulk', bulkcsv);
+app.use('/api/v1/exchange', exchange);
+// app.use('/api/v1/transactionInADay', transactionADay)
 
 const port =process.env.PORT || 5000;
 app.listen(port,()=>{    

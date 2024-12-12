@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -37,10 +37,10 @@ enum Risk{
 }
 
 
-model IsSuspicious{
-  id String @id @default(uuid())
-  walletAddress String
-  isSuspicious Boolean @default(false)
+model IsSuspicious {
+  id             String   @id @default(uuid())
+  walletAddress  String   @unique // Add @unique here
+  isSuspicious   Boolean  @default(false)
   reason         String? 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
